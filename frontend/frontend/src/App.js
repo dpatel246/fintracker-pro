@@ -1,2 +1,205 @@
-// Copy the ENTIRE React component code from the "FinTracker Pro" artifact I created above
+
 // This is the main application with dashboard, transactions, accounts, etc.
+import React, { useState, useEffect } from 'react';
+import { PlusCircle, DollarSign, TrendingUp, TrendingDown, Eye, EyeOff, CreditCard, PieChart, BarChart3, Calendar, Filter, Download, Settings, User, LogOut, Bell } from 'lucide-react';
+
+const FinTrackerPro = () => {
+  const [user, setUser] = useState(null);
+  const [currentView, setCurrentView] = useState('dashboard');
+  const [showBalance, setShowBalance] = useState(true);
+  const [transactions, setTransactions] = useState([
+    { id: 1, type: 'income', amount: 5000, category: 'Salary', description: 'Monthly Salary', date: '2025-01-01', account: 'Chase Checking' },
+    { id: 2, type: 'expense', amount: 1200, category: 'Rent', description: 'Monthly Rent', date: '2025-01-02', account: 'Chase Checking' },
+    { id: 3, type: 'expense', amount: 450, category: 'Groceries', description: 'Weekly Shopping', date: '2025-01-03', account: 'Chase Checking' },
+    { id: 4, type: 'expense', amount: 80, category: 'Transportation', description: 'Gas', date: '2025-01-04', account: 'Chase Checking' },
+    { id: 5, type: 'income', amount: 500, category: 'Freelance', description: 'Web Development Project', date: '2025-01-05', account: 'PayPal' },
+    { id: 6, type: 'expense', amount: 120, category: 'Dining', description: 'Restaurant', date: '2025-01-06', account: 'Credit Card' },
+  ]);
+
+  // Login simulation
+  const [loginForm, setLoginForm] = useState({ email: '', password: '' });
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    setUser({ name: 'Dharmik Patel', email: loginForm.email });
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(Math.abs(amount));
+  };
+
+  // Authentication Screen
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 mb-2">FinTracker Pro</h1>
+            <p className="text-gray-600">Your Personal Finance Management System</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={loginForm.email}
+              onChange={(e) => setLoginForm({...loginForm, email: e.target.value})}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={loginForm.password}
+              onChange={(e) => setLoginForm({...loginForm, password: e.target.value})}
+              required
+            />
+            <button
+              type="submit"
+              className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors font-medium"
+            >
+              Login
+            </button>
+          </form>
+          
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">Demo: Use any email/password</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow-sm border-b">
+        <div className="px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-4">
+              <h1 className="text-2xl font-bold text-gray-800">FinTracker Pro</h1>
+            </div>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <User className="h-5 w-5 text-gray-600" />
+                <span className="text-sm font-medium">{user.name}</span>
+                <button 
+                  onClick={() => setUser(null)} 
+                  className="text-sm text-red-600 hover:text-red-800"
+                >
+                  <LogOut className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Dashboard */}
+      <main className="p-6">
+        <div className="max-width-6xl mx-auto">
+          {/* Overview Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+            <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Net Worth</p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {showBalance ? '$16,500' : '****'}
+                  </p>
+                </div>
+                <div className="p-3 bg-blue-50 rounded-full">
+                  <DollarSign className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Monthly Income</p>
+                  <p className="text-2xl font-bold text-green-600">
+                    {showBalance ? '$5,500' : '****'}
+                  </p>
+                </div>
+                <div className="p-3 bg-green-50 rounded-full">
+                  <TrendingUp className="h-6 w-6 text-green-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Monthly Expenses</p>
+                  <p className="text-2xl font-bold text-red-600">
+                    {showBalance ? '$3,850' : '****'}
+                  </p>
+                </div>
+                <div className="p-3 bg-red-50 rounded-full">
+                  <TrendingDown className="h-6 w-6 text-red-600" />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-gray-600">Savings Rate</p>
+                  <p className="text-2xl font-bold text-blue-600">30%</p>
+                </div>
+                <div className="p-3 bg-blue-50 rounded-full">
+                  <PieChart className="h-6 w-6 text-blue-600" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Transactions */}
+          <div className="bg-white rounded-xl shadow-sm border">
+            <div className="p-6 border-b">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-800">Recent Transactions</h2>
+                <button onClick={() => setShowBalance(!showBalance)}>
+                  {showBalance ? <Eye className="h-4 w-4 text-gray-400" /> : <EyeOff className="h-4 w-4 text-gray-400" />}
+                </button>
+              </div>
+            </div>
+            <div className="p-6">
+              <div className="space-y-4">
+                {transactions.slice(-5).reverse().map((transaction) => (
+                  <div key={transaction.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                    <div className="flex items-center space-x-4">
+                      <div className={`p-2 rounded-full ${transaction.type === 'income' ? 'bg-green-100' : 'bg-red-100'}`}>
+                        {transaction.type === 'income' ? 
+                          <TrendingUp className="h-4 w-4 text-green-600" /> :
+                          <TrendingDown className="h-4 w-4 text-red-600" />
+                        }
+                      </div>
+                      <div>
+                        <p className="font-medium text-gray-900">{transaction.description}</p>
+                        <p className="text-sm text-gray-600">{transaction.category} • {transaction.account}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className={`font-semibold ${transaction.type === 'income' ? 'text-green-600' : 'text-red-600'}`}>
+                        {transaction.type === 'income' ? '+' : '-'}{formatCurrency(transaction.amount)}
+                      </p>
+                      <p className="text-sm text-gray-600">{transaction.date}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
+};
+
+export default FinTrackerPro;
